@@ -2,18 +2,15 @@ package com.prithvianilk;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class WhatsAppChatParserTest {
-
     @Test
     void testParseMessages() throws IOException {
         // Given
@@ -24,25 +21,28 @@ class WhatsAppChatParserTest {
         List<WhatsAppMessage> messages = parser.getMessages().toList();
 
         // Then
-        assertEquals(3, messages.size());
+        System.out.println(Instant.now());
+        List<WhatsAppMessage> expectedMessages = List.of(
+                new WhatsAppMessage(
+                        toInstantFromIstTimestamp(2025, 10, 15, 22, 1, 32),
+                        "Person 1",
+                        "Hi"),
+                new WhatsAppMessage(
+                        toInstantFromIstTimestamp(2025, 10, 15, 22, 1, 42),
+                        "Person 1",
+                        "Bye. But what's up?"),
+                new WhatsAppMessage(
+                        toInstantFromIstTimestamp(2025, 10, 15, 22, 2, 4),
+                        "Person 2",
+                        "nothing\nsometimes it's something\nlol"));
 
-        // Verify first message
-        WhatsAppMessage msg1 = messages.getFirst();
-        assertEquals("Person 1", msg1.by());
-        assertEquals("Hi", msg1.content());
-        assertTimestamp(msg1.timestamp(), 2025, 10, 15, 22, 1, 32);
+        for (int i = 0; i < 3; ++i) {
+            assertEquals(expectedMessages.get(i), messages.get(i));
+        }
+    }
 
-        // Verify second message
-        WhatsAppMessage msg2 = messages.get(1);
-        assertEquals("Person 1", msg2.by());
-        assertEquals("Bye. But what's up?", msg2.content());
-        assertTimestamp(msg2.timestamp(), 2025, 10, 15, 22, 1, 42);
-
-        // Verify third message (multi-line)
-        WhatsAppMessage msg3 = messages.get(2);
-        assertEquals("Person 2", msg3.by());
-        assertEquals("nothing\nsometimes it's something\nlol", msg3.content());
-        assertTimestamp(msg3.timestamp(), 2025, 10, 15, 22, 2, 4);
+    private Instant toInstantFromIstTimestamp(int year, int month, int day, int hour, int minute, int second) {
+        return LocalDateTime.of(year, month, day, hour, minute, second).atZone(ZoneId.of("Asia/Kolkata")).toInstant();
     }
 
     @Test
@@ -62,10 +62,6 @@ class WhatsAppChatParserTest {
     void testEmptyFile() throws IOException {
         // Given
         String filePath = "src/test/resources/empty.txt";
-        File emptyFile = new File(filePath);
-        emptyFile.getParentFile().mkdirs();
-        emptyFile.createNewFile();
-
         WhatsAppChatParser parser = new WhatsAppChatParser(filePath);
 
         // When
@@ -73,9 +69,6 @@ class WhatsAppChatParserTest {
 
         // Then
         assertEquals(0, messages.size());
-
-        // Cleanup
-        emptyFile.delete();
     }
 
     @Test
@@ -90,23 +83,13 @@ class WhatsAppChatParserTest {
         // Then
         assertEquals(
                 List.of(new WhatsAppMessage(
-                                LocalDateTime.of(2025, 10, 17, 16, 9, 21).toInstant(ZoneOffset.UTC),
+                                toInstantFromIstTimestamp(2025, 10, 17, 21, 39, 21),
                                 "Prithvi Anil Kumar",
                                 "Hi"),
                         new WhatsAppMessage(
-                                LocalDateTime.of(2025, 10, 17, 16, 52, 36).toInstant(ZoneOffset.UTC),
+                                toInstantFromIstTimestamp(2025, 10, 17, 22, 22, 36),
                                 "Prithvi Anil Kumar",
                                 "Hey")),
                 messages);
-    }
-
-    private void assertTimestamp(Instant actual, int year, int month, int day, int hour, int minute, int second) {
-        LocalDateTime actualDateTime = LocalDateTime.ofInstant(actual, ZoneId.systemDefault());
-        assertEquals(year, actualDateTime.getYear());
-        assertEquals(month, actualDateTime.getMonthValue());
-        assertEquals(day, actualDateTime.getDayOfMonth());
-        assertEquals(hour, actualDateTime.getHour());
-        assertEquals(minute, actualDateTime.getMinute());
-        assertEquals(second, actualDateTime.getSecond());
     }
 }

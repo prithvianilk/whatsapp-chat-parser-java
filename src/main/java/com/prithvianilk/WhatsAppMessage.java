@@ -33,8 +33,22 @@ public class WhatsAppMessage {
         return Objects.equals(timestamp, that.timestamp) && Objects.equals(by, that.by) && Objects.equals(content, that.content);
     }
 
+
     @Override
     public int hashCode() {
-        return Objects.hash(timestamp, by, content);
+        int result = timestamp.hashCode();
+        result = 31 * result + by.hashCode();
+        result = 31 * result + content.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "WhatsAppMessage{" +
+                "timestamp=" + timestamp +
+                ", by='" + by + '\'' +
+                ", content='" + content + '\'' +
+                '}';
     }
 }
+
