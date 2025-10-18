@@ -1,0 +1,5 @@
+[15/10/25, 10:01:32 PM] Person 1: Hi
+[15/10/25, 10:01:42 PM] Person 1: Bye. But what's up?
+[15/10/25, 10:02:04 PM] Person 2: nothing
+sometimes it's something
+lol
