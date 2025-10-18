@@ -1,0 +1,6 @@
+[18/10/2025, 10:30:45] John: Hey, how are you?
+[18/10/2025, 10:31:02] Alice: I'm doing great, thanks!
+[18/10/2025, 10:31:15] John: Want to grab lunch later?
+[18/10/2025, 10:32:00] Alice: Sure, what time works for you?
+18/10/25, 10:33 - John: How about 1 PM?
+18/10/25, 10:34 - Alice: Perfect, see you then!
